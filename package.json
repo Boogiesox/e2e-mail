@@ -1,0 +1,28 @@
+{
+  "name": "e2e-mail",
+  "version": "0.0.1",
+  "description": "A zero-config solution for testing email in major testing frameworks.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "generate": "tsx src/generate-types.ts"
+  },
+  "keywords": [
+    "Cypress",
+    "Playwright",
+    "Testing",
+    "Email"
+  ],
+  "author": "Eric Gregoire",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "openapi-typescript": "^7.13.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.17.0",
+    "tsx": "^4.22.4"
+  }
+}
