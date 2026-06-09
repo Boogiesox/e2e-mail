@@ -11,8 +11,7 @@ type SchemaResponse = {
   links?: Record<string, unknown>;
 };
 
-const url = "https://api.mail.tm/docs.jsonopenapi";
-const accept = "application/json";
+const [accept = "", url = "", destination = ""] = process.argv.slice(2);
 
 const schema = await fetch(url).then((r) => r.json());
 
@@ -38,5 +37,7 @@ for (const path of Object.values(schema.paths)) {
 
 const ast = await openapiTS(schema);
 
-fs.writeFileSync("./src/mailtm.d.ts", astToString(ast));
-console.log(`✅ Generated filtered OpenAPI types for ${accept}`);
+fs.writeFileSync(destination, astToString(ast));
+console.log(
+  `✅ Generated filtered ${accept} types from ${url} at ${destination}`,
+);

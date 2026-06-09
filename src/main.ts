@@ -1,25 +1,30 @@
-import { MailTm } from "./mailtm";
-
-const client = new MailTm();
+import {
+  createAccount,
+  getDomains,
+  getMessages,
+  getSource,
+  createToken,
+} from "./core/api/mailtm-api";
 
 async function main() {
-  const domain = await client.getActiveDomain();
+  const domain = await getDomains();
+  const activeDomain = domain.find((d) => d.isActive)?.domain;
 
   const testAccount = {
-    address: `test-ing@${domain}`,
+    address: `test-ing@${activeDomain}`,
     password: "Pass1234",
   };
 
-  await client.createAccount(testAccount);
+  await createAccount(testAccount);
 
-  const auth = await client.getToken(testAccount);
+  const auth = await createToken(testAccount);
 
   if (auth?.token) {
-    const messages = await client.getMessages(auth.token);
+    const messages = await getMessages(auth.token);
 
     const [latestMessage] = messages ?? [];
 
-    const messageSource = await client.getSource(
+    const messageSource = await getSource(
       auth.token,
       latestMessage?.sourceUrl?.split("/").pop() ?? "",
     );
