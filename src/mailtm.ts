@@ -61,4 +61,20 @@ export class MailTm {
 
     return data;
   }
+
+  public async getSource(token: string, id: string) {
+    const { data } = await client.GET("/sources/{id}", {
+      params: {
+        path: {
+          id,
+        },
+      },
+      headers: {
+        ...COMMON_CONFIG.headers,
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return data;
+  }
 }

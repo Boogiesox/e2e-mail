@@ -17,7 +17,17 @@ async function main() {
   if (auth?.token) {
     const messages = await client.getMessages(auth.token);
 
-    console.log(`Messages for ${testAccount.address}`, messages);
+    const [latestMessage] = messages ?? [];
+
+    const messageSource = await client.getSource(
+      auth.token,
+      latestMessage?.sourceUrl?.split("/").pop() ?? "",
+    );
+
+    console.log(
+      `Lastest message source for ${testAccount.address}`,
+      latestMessage,
+    );
   }
 }
 
