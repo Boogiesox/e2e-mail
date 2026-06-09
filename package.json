@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/main.ts",
-    "schema": "tsx src/schema/generate-types.ts application/json https://api.mail.tm/docs.jsonopenapi ./src/core/api/index.d.ts"
+    "schema": "tsx scripts/generate-types.ts application/json https://api.mail.tm/docs.jsonopenapi ./src/core/api/mailtm-api.d.ts"
   },
   "keywords": [
     "Cypress",

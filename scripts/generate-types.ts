@@ -1,15 +1,15 @@
 /**
- * Generates TypeScript types from the OpenAPI schema of the Mail.tm API, filtering for a specific content type.
+ * Generates TypeScript types from the OpenAPI schema of the specified API, filtering for a specific content type where multiple are available.
+ * @usage Run the script with the following command:
+ *   node scripts/generate-types.js <accept> <url> <destination>
+ * @param {string} accept - The content type to filter for (e.g., "application/json").
+ * @param {string} url - The URL of the OpenAPI schema to fetch.
+ * @param {string} destination - The file path where the generated types should be saved.
  */
 
 import openapiTS, { astToString } from "openapi-typescript";
 import fs from "node:fs";
-
-type SchemaResponse = {
-  description?: string;
-  content?: Record<string, unknown>;
-  links?: Record<string, unknown>;
-};
+import type { SchemaResponse } from ".";
 
 const [accept = "", url = "", destination = ""] = process.argv.slice(2);
 

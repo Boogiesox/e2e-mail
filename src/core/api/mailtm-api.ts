@@ -1,3 +1,4 @@
+import type { RequestPayload } from ".";
 import { client } from "../client/client";
 
 // Domain
@@ -15,10 +16,7 @@ export async function getDomains() {
 export async function createAccount({
   address,
   password,
-}: {
-  address: string;
-  password: string;
-}) {
+}: RequestPayload<"api_accounts_post">) {
   const { data } = await client.POST("/accounts", {
     headers: {
       Accept: "application/json",
@@ -36,10 +34,7 @@ export async function createAccount({
 export async function createToken({
   address,
   password,
-}: {
-  address: string;
-  password: string;
-}) {
+}: RequestPayload<"login_check_post">) {
   const { data } = await client.POST("/token", {
     headers: {
       Accept: "application/json",
