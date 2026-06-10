@@ -1,5 +1,5 @@
 /**
- * Generates TypeScript types from the OpenAPI schema of the specified API, filtering for a specific content type where multiple are available.
+ * Generates TypeScript types from the live OpenAPI schema at the specified url, filtering for a specific content type where multiple are available.
  * @usage Run the script with the following command:
  *   node scripts/generate-types.js <accept> <url> <destination>
  * @param {string} accept - The content type to filter for (e.g., "application/json").
