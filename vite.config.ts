@@ -9,19 +9,12 @@ export default defineConfig({
         cypress: resolve(__dirname, "src/cypress/index.ts"),
         playwright: resolve(__dirname, "src/playwright/index.ts"),
       },
-      name: "e2eMail",
+      name: "e2e-mail",
       formats: ["es"],
       fileName: (format, entryName) => `${entryName}.js`,
     },
     rollupOptions: {
-      external: ["cypress", "@playwright/test", "openapi-fetch"],
-      output: {
-        globals: {
-          cypress: "Cypress",
-          "@playwright/test": "PlaywrightTest",
-          "openapi-fetch": "openapiClient",
-        },
-      },
+      external: ["cypress", "@playwright", "@playwright/test", "openapi-fetch"],
     },
     outDir: "dist",
     sourcemap: true,
