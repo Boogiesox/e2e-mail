@@ -3,7 +3,7 @@ export type SearchFilters = {
   subject?: string;
 
   /** Search for emails to certain recipient
-   * @example Useful for narrowing messages by email sub addressing. e.g. test-email+12345@example.com
+   * @remarks Useful for narrowing messages by uniquely sub addressing the same inbox. e.g. test-email+12345, test-email+45678
    */
   recipient?: string;
 

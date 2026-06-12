@@ -2,11 +2,31 @@
   "name": "e2e-mail",
   "version": "0.0.1",
   "description": "A zero-config solution for testing email in major testing frameworks.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./cypress": {
+      "import": "./dist/cypress/index.js"
+    },
+    "./playwright": {
+      "import": "./dist/playwright/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src/cypress/README.md",
+    "src/playwright/README.md"
+  ],
   "scripts": {
     "start": "tsx src/main.ts",
-    "schema": "tsx scripts/generate-types.ts application/json https://api.mail.tm/docs.jsonopenapi ./src/core/api/mailtm-api.d.ts"
+    "schema": "tsx scripts/generate-types.ts application/json https://api.mail.tm/docs.jsonopenapi ./src/core/api/mailtm-api.d.ts",
+    "build": "vite build",
+    "build:watch": "vite build --watch",
+    "e2e:cypress": "cypress open",
+    "e2e:playwright": "playwright test --ui"
   },
   "keywords": [
     "Cypress",
@@ -17,12 +37,24 @@
   "author": "Eric Gregoire",
   "license": "MIT",
   "devDependencies": {
+    "@playwright/test": "^1.49.0",
     "@types/node": "^25.9.2",
-    "openapi-typescript": "^7.13.0",
-    "typescript": "^5.9.3"
-  },
-  "dependencies": {
     "openapi-fetch": "^0.17.0",
-    "tsx": "^4.22.4"
+    "openapi-typescript": "^7.13.0",
+    "tsx": "^4.22.4",
+    "typescript": "^5.9.3",
+    "vite": "^6.3.0"
+  },
+  "peerDependencies": {
+    "cypress": "^15",
+    "playwright": "^1.60"
+  },
+  "peerDependenciesMeta": {
+    "cypress": {
+      "optional": true
+    },
+    "playwright": {
+      "optional": true
+    }
   }
 }

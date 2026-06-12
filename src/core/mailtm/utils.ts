@@ -22,7 +22,7 @@ export const validateEmailDomain = async (address: string) => {
 };
 
 /** Search and filter account messages by message metadata or content
- * @param messages The messages returned from teh account to filter
+ * @param messages The messages returned from the account to filter
  * @param filters The filtering criteria to apply to the messages
  */
 export function filterMessages(
