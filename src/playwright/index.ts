@@ -6,11 +6,22 @@ import { E2EMailClient } from "../core/mailtm";
 type Message = components["schemas"]["Message-message.read"];
 
 export type MailFixtures = {
+  /**
+   * Initialize mailbox session
+   * @param address Email address
+   * @param password Account password
+   */
   initializeMailbox: (address: string, password: string) => void;
+
+  /**
+   * Get latest inbox match for an existing or new mail account
+   * @param filters Optional search filters
+   * @param options Configuration for message polling
+   */
   searchMailbox: (
     filters?: SearchFilters,
     options?: { timeout?: number },
-  ) => Promise<Message[]>;
+  ) => Promise<Message>;
 };
 
 let mailClient: E2EMailClient | undefined;
@@ -23,12 +34,10 @@ export const test = base.extend<MailFixtures>({
     });
   },
 
-  searchMailbox: async ({}, use) => {
+  searchMailbox: async ({ page }, use) => {
     await use(async (filters, options = {}) => {
       const { timeout = test.info().project.use.actionTimeout ?? 4000 } =
         options;
-
-      console.log(timeout);
 
       if (!mailClient) {
         throw new Error(
@@ -36,7 +45,14 @@ export const test = base.extend<MailFixtures>({
         );
       }
 
-      return await mailClient.pollMessages(filters, timeout);
+      const message = await mailClient.pollMessages(filters, timeout);
+      const html = message.html?.[0] ?? message.html ?? "";
+
+      if (html) {
+        await page.setContent(String(html));
+      }
+
+      return message;
     });
   },
 });

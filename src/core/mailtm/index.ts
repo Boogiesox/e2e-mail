@@ -1,5 +1,10 @@
 import type { SearchFilters } from "./mailtm";
-import { createAccount, createToken, getMessages } from "../api/mailtm-api";
+import {
+  createAccount,
+  createToken,
+  getMessage,
+  getMessages,
+} from "../api/mailtm-api";
 import { filterMessages, validateEmailDomain } from "./utils";
 
 export class E2EMailClient {
@@ -35,7 +40,7 @@ export class E2EMailClient {
     }
   }
 
-  /** Fetch and filter emails for the initialized mailbox */
+  /** Fetch and filter emails for the initialized mailbox and return most recent match */
   private async queryMessages(filters?: SearchFilters) {
     if (!this.token)
       throw new Error(
@@ -44,7 +49,9 @@ export class E2EMailClient {
 
     const allMessages = await getMessages(this.token);
 
-    return filterMessages(allMessages, filters);
+    const [firstMatch = {}] = filterMessages(allMessages, filters);
+
+    return await getMessage(this.token, firstMatch.id || "");
   }
 
   /** Poll for messages in the initialized mailbox and timeout */
@@ -52,10 +59,10 @@ export class E2EMailClient {
     const start = Date.now();
 
     while (Date.now() - start < timeout) {
-      const messages = await this.queryMessages(filters);
+      const message = await this.queryMessages(filters);
 
-      if (messages.length > 0) {
-        return messages;
+      if (message) {
+        return message;
       }
 
       await new Promise((resolve) =>

@@ -4,20 +4,19 @@ test.describe("Mail.tm Integration", () => {
   test("should fetch messages using getMailMessages fixture", async ({
     initializeMailbox,
     searchMailbox,
+    page,
   }) => {
     await initializeMailbox("test-ing@web-library.net", "Pass1234");
 
     const messages = await searchMailbox(
       {
-        //subject: "SpaceX",
+        subject: "Testing",
         recipient: "test-ing+123456@web-library.net",
         sender: "09egrego@gmail.com",
-        createdAfter: "2026-06-13T02:25:21+00:00",
+        createdAfter: "2026-06-09T02:25:21+00:00",
       },
       { timeout: 30000 },
     );
-
-    expect(Array.isArray(messages)).toBe(true);
 
     console.log(messages);
   });

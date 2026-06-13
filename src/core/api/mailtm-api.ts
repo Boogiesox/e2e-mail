@@ -66,6 +66,22 @@ export async function getMessages(token: string) {
   return data;
 }
 
+export async function getMessage(token: string, id: string) {
+  const { data } = await client.GET("/messages/{id}", {
+    params: {
+      path: {
+        id,
+      },
+    },
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data;
+}
+
 // Source
 export async function getSource(token: string, id: string) {
   const { data } = await client.GET("/sources/{id}", {

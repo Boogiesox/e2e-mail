@@ -4,27 +4,29 @@ import { E2EMailClient } from "../core/mailtm";
 
 export type { SearchFilters } from "../core/mailtm/mailtm";
 
-type Message = components["schemas"]["Message-messages.read"];
+type Message = components["schemas"]["Message-message.read"];
 
 declare global {
   namespace Cypress {
     interface Chainable {
       /**
-       * Get messages for an existing or new mail account
+       * Initialize mailbox session
        * @param address Email address
        * @param password Account password
        */
       initializeMailbox(address: string, password: string): void;
 
       /**
-       * Get messages for an existing or new mail account
+       * Get most recent inbox match for an existing or new mail account
        * @param filters Optional search filters
        * @param options Configuration for message polling
        */
       searchMailbox(
         filters?: SearchFilters,
         options?: { timeout?: number },
-      ): Chainable<Message[]>;
+      ): Chainable<Message>;
+
+      renderEmail(message: Message): Chainable<void>;
     }
   }
 }
@@ -50,6 +52,19 @@ Cypress.Commands.add("searchMailbox", (filters, options = {}) => {
       );
     }
 
-    return await mailClient.pollMessages(filters, timeout);
+    // Get most recent match
+    const message = await mailClient.pollMessages(filters, timeout);
+    const html = Array.isArray(message.html) ? message.html[0] : message.html;
+
+    // Write HTML to Cypress DOM
+    if (html) {
+      cy.document().then((doc) => {
+        doc.open();
+        doc.write(String(html));
+        doc.close();
+      });
+    }
+
+    return message;
   });
 });

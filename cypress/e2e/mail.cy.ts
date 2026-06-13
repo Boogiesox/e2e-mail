@@ -4,16 +4,12 @@ describe("Mail.tm Integration", () => {
 
     cy.searchMailbox(
       {
-        //subject: "SpaceX",
+        subject: "Testing",
         recipient: "test-ing+123456@web-library.net",
         sender: "09egrego@gmail.com",
-        createdAfter: "2026-06-13T02:15:21+00:00",
+        createdAfter: "2026-06-08T02:15:21+00:00",
       },
       { timeout: 30000 },
-    ).then((messages: any[]) => {
-      expect(messages).to.be.an("array");
-
-      console.log(messages);
-    });
+    );
   });
 });
