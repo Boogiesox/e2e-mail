@@ -19,8 +19,12 @@ declare global {
       /**
        * Get messages for an existing or new mail account
        * @param filters Optional search filters
+       * @param options Configuration for message polling
        */
-      searchMailbox(filters?: SearchFilters): Chainable<Message[]>;
+      searchMailbox(
+        filters?: SearchFilters,
+        options?: { timeout?: number },
+      ): Chainable<Message[]>;
     }
   }
 }
@@ -36,14 +40,16 @@ Cypress.Commands.add("initializeMailbox", (address, password) => {
   });
 });
 
-Cypress.Commands.add("searchMailbox", (filters?: SearchFilters) => {
-  return cy.then(async () => {
+Cypress.Commands.add("searchMailbox", (filters, options = {}) => {
+  const { timeout = Cypress.config().defaultCommandTimeout ?? 4000 } = options;
+
+  return cy.then({ timeout: timeout + 1000 }, async () => {
     if (!mailClient) {
       throw new Error(
         "Mailbox client not initialized. Call cy.initializeMailbox() first.",
       );
     }
 
-    return await mailClient.queryMessages(filters);
+    return await mailClient.pollMessages(filters, timeout);
   });
 });

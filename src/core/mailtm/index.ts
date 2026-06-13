@@ -3,6 +3,7 @@ import { createAccount, createToken, getMessages } from "../api/mailtm-api";
 import { filterMessages, validateEmailDomain } from "./utils";
 
 export class E2EMailClient {
+  private static readonly POLL_INTERVAL = 1000;
   private token: string | undefined;
   private address: string;
   private password: string;
@@ -35,11 +36,35 @@ export class E2EMailClient {
   }
 
   /** Fetch and filter emails for the initialized mailbox */
-  public async queryMessages(filters?: SearchFilters) {
-    if (!this.token) throw new Error("Error fetching messages: auth missing");
+  private async queryMessages(filters?: SearchFilters) {
+    if (!this.token)
+      throw new Error(
+        `E2EMail - Searching mailbox ${this.address} failed.\n\nPassword is incorrect.`,
+      );
 
     const allMessages = await getMessages(this.token);
 
     return filterMessages(allMessages, filters);
+  }
+
+  /** Poll for messages in the initialized mailbox and timeout */
+  public async pollMessages(filters?: SearchFilters, timeout = 30000) {
+    const start = Date.now();
+
+    while (Date.now() - start < timeout) {
+      const messages = await this.queryMessages(filters);
+
+      if (messages.length > 0) {
+        return messages;
+      }
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, E2EMailClient.POLL_INTERVAL),
+      );
+    }
+
+    throw new Error(
+      `E2E Mail - No matching messages found after ${timeout}ms.`,
+    );
   }
 }

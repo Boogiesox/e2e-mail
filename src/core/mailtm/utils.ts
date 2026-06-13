@@ -14,7 +14,7 @@ export const validateEmailDomain = async (address: string) => {
 
   if (!domainMatch) {
     throw new Error(
-      `Domain @${domain} cannot be used to initialize mailbox.\nTry again with one of the following domains: ${activeDomains.join(", ")}`,
+      `E2E Mail - Domain @${domain} cannot be used to initialize mailbox.\n\nTry again with one of the following domains: ${activeDomains.join(", ")}`,
     );
   }
 
@@ -51,13 +51,11 @@ export function filterMessages(
 
   if (filters.subject) {
     const regex = new RegExp(filters.subject, "i");
-
     predicates.push((message) => regex.test(message.subject ?? ""));
   }
 
   if (filters.createdAfter) {
     const startTime = Date.parse(filters.createdAfter);
-
     predicates.push(
       (message) => Date.parse(message.createdAt ?? "") > startTime,
     );
