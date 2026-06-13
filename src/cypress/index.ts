@@ -1,9 +1,8 @@
 import type { SearchFilters } from "../core/mailtm/mailtm";
 import type { components } from "../core/api/mailtm-api.d";
-import { getAccountMessages } from "../core/mailtm";
+import { E2EMailClient } from "../core/mailtm";
 
 export type { SearchFilters } from "../core/mailtm/mailtm";
-export { getAccountMessages } from "../core/mailtm";
 
 type Message = components["schemas"]["Message-messages.read"];
 
@@ -14,18 +13,37 @@ declare global {
        * Get messages for an existing or new mail account
        * @param address Email address
        * @param password Account password
+       */
+      initializeMailbox(address: string, password: string): void;
+
+      /**
+       * Get messages for an existing or new mail account
        * @param filters Optional search filters
        */
-      getMailMessages(
-        address: string,
-        password: string,
-        filters?: SearchFilters,
-      ): Chainable<Message[]>;
+      searchMailbox(filters?: SearchFilters): Chainable<Message[]>;
     }
   }
 }
 
-Cypress.Commands.add("getMailMessages", (address, password, filters?) => {
-  cy.log(`Fetching messages for ${address}`);
-  return cy.then(() => getAccountMessages(address, password, filters));
+let mailClient: E2EMailClient | null = null;
+
+Cypress.Commands.add("initializeMailbox", (address, password) => {
+  cy.log(`Creating mailbox ${address}`);
+
+  return cy.then(async () => {
+    mailClient = new E2EMailClient(address, password);
+    await mailClient.initialize();
+  });
+});
+
+Cypress.Commands.add("searchMailbox", (filters?: SearchFilters) => {
+  return cy.then(async () => {
+    if (!mailClient) {
+      throw new Error(
+        "Mailbox client not initialized. Call cy.initializeMailbox() first.",
+      );
+    }
+
+    return await mailClient.queryMessages(filters);
+  });
 });

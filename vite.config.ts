@@ -16,6 +16,7 @@ export default defineConfig({
     rollupOptions: {
       external: ["cypress", "@playwright", "@playwright/test", "openapi-fetch"],
     },
+    minify: true,
     outDir: "dist",
     sourcemap: true,
   },

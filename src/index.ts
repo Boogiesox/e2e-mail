@@ -1,3 +1,3 @@
 // Main library exports
-export { getAccountMessages } from "./core/mailtm";
+export { E2EMailClient } from "./core/mailtm";
 export type { SearchFilters } from "./core/mailtm/mailtm";

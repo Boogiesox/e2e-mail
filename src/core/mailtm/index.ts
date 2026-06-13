@@ -1,45 +1,45 @@
-import type { ResponseData } from "../api";
 import type { SearchFilters } from "./mailtm";
-import {
-  createAccount,
-  createToken,
-  getMessages,
-  getSource,
-} from "../api/mailtm-api";
+import { createAccount, createToken, getMessages } from "../api/mailtm-api";
 import { filterMessages, validateEmailDomain } from "./utils";
 
-/** Gets messages flow for given account credentials.
- * @remarks If the account doesn't exist, it will be created automatically.
- */
-export async function getAccountMessages(
-  /** Email address of new or existing account */
-  address: string,
-  /** Password of existing account or chosen password for new account */
-  password: string,
-  /** Filtering criteria for narrowing the returned result set  */
-  filters?: SearchFilters,
-) {
-  // Attempt to authenticate with the provided credentials
-  const auth = await createToken({
-    address,
-    password,
-  });
+export class E2EMailClient {
+  private token: string | undefined;
+  private address: string;
+  private password: string;
 
-  // If authentication fails, check for domain validity, auto-create the account, and recurse
-  if (!auth?.token) {
-    validateEmailDomain(address);
-
-    await createAccount({
-      address,
-      password,
-    });
-
-    return getAccountMessages(address, password, filters);
+  constructor(address: string, password: string) {
+    this.address = address;
+    this.password = password;
   }
 
-  // Fetch and filter messages
-  const allMessages = await getMessages(auth.token);
-  const filteredMessages = filterMessages(allMessages, filters);
+  private async getAuth() {
+    const auth = await createToken({
+      address: this.address,
+      password: this.password,
+    });
 
-  return filteredMessages;
+    if (auth?.token) {
+      this.token = auth.token;
+    }
+  }
+
+  /** Initializes mailbox with existing credentials. If new and available account, it will be created automatically */
+  public async initialize() {
+    await this.getAuth();
+
+    if (!this.token) {
+      await validateEmailDomain(this.address);
+      await createAccount({ address: this.address, password: this.password });
+      await this.getAuth();
+    }
+  }
+
+  /** Fetch and filter emails for the initialized mailbox */
+  public async queryMessages(filters?: SearchFilters) {
+    if (!this.token) throw new Error("Error fetching messages: auth missing");
+
+    const allMessages = await getMessages(this.token);
+
+    return filterMessages(allMessages, filters);
+  }
 }

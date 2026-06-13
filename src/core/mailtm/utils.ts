@@ -14,7 +14,7 @@ export const validateEmailDomain = async (address: string) => {
 
   if (!domainMatch) {
     throw new Error(
-      `@${domain} cannot be used with mail.tm.\nTry again with one of the following active domains: ${activeDomains.join(", ")}`,
+      `Domain @${domain} cannot be used to initialize mailbox.\nTry again with one of the following domains: ${activeDomains.join(", ")}`,
     );
   }
 
