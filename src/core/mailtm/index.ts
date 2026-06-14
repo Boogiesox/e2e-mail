@@ -23,13 +23,13 @@ export class E2EMailClient {
   }
 
   private async login() {
-    const auth = await createToken({
+    const { data: auth } = await createToken({
       address: this.address,
       password: this.password,
     });
 
     if (auth?.token) {
-      const account = await getMe(auth.token);
+      const { data: account } = await getMe(auth.token);
 
       this.token = auth.token;
       this.accountId = account?.id;
@@ -42,7 +42,14 @@ export class E2EMailClient {
 
     if (!this.token) {
       await validateEmailDomain(this.address);
-      await createAccount({ address: this.address, password: this.password });
+      const { error: { detail = "" } = {} } = await createAccount({
+        address: this.address,
+        password: this.password,
+      });
+
+      if (detail)
+        throw new Error(`E2E Mail - Failed to create Account.\n${detail}`);
+
       await this.login();
     }
   }
@@ -63,12 +70,15 @@ export class E2EMailClient {
         `E2EMail - Searching mailbox ${this.address} failed.\n\nPassword is incorrect.`,
       );
 
-    const allMessages = await getMessages(this.token);
+    const { data: allMessages } = await getMessages(this.token);
     const [firstMatch] = filterMessages(allMessages, filters);
 
-    return firstMatch
-      ? await getMessage(this.token, firstMatch.id || "")
-      : null;
+    if (firstMatch) {
+      const { data } = await getMessage(this.token, firstMatch?.id || "");
+      return data;
+    }
+
+    return;
   }
 
   /** Poll for messages in the initialized mailbox and timeout */

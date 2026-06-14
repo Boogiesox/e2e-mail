@@ -7,7 +7,7 @@ import type { SearchFilters } from "./mailtm.d";
  * @param address The email address for which to check domain validitity
  */
 export const validateEmailDomain = async (address: string) => {
-  const domains = await getDomains();
+  const { data: domains } = await getDomains();
   const domain = address.split("@")[1];
   const activeDomains = domains.filter((d) => d.isActive).map((d) => d.domain);
   const domainMatch = activeDomains.find((d) => d === domain);
