@@ -1,5 +1,5 @@
 import { test as base } from "@playwright/test";
-import type { SearchFilters } from "../core/mailtm/mailtm";
+import type { PollingOptions, SearchFilters } from "../core/mailtm/mailtm";
 import type { components } from "../core/api/mailtm-api.d";
 import { E2EMailClient } from "../core/mailtm";
 
@@ -14,14 +14,19 @@ export type MailFixtures = {
   initializeMailbox: (address: string, password: string) => void;
 
   /**
-   * Get latest inbox match for an existing or new mail account
+   * Get most recent inbox match for an existing or new mail account
    * @param filters Optional search filters
    * @param options Configuration for message polling
    */
   searchMailbox: (
     filters?: SearchFilters,
-    options?: { timeout?: number },
+    options?: PollingOptions,
   ) => Promise<Message>;
+
+  /**
+   * Delete the account mailbox and all its emails from the server
+   */
+  removeMailbox: (address: string, password: string) => void;
 };
 
 let mailClient: E2EMailClient | undefined;
@@ -34,10 +39,24 @@ export const test = base.extend<MailFixtures>({
     });
   },
 
+  removeMailbox: async ({}, use) => {
+    await use(async () => {
+      if (!mailClient) {
+        throw new Error(
+          "Mailbox client not initialized. Call initializeMailbox() first.",
+        );
+      }
+
+      await mailClient.dispose();
+    });
+  },
+
   searchMailbox: async ({ page }, use) => {
     await use(async (filters, options = {}) => {
-      const { timeout = test.info().project.use.actionTimeout ?? 4000 } =
-        options;
+      const {
+        timeout = test.info().project.use.actionTimeout ?? 4000,
+        autoDelete,
+      } = options;
 
       if (!mailClient) {
         throw new Error(
@@ -45,7 +64,10 @@ export const test = base.extend<MailFixtures>({
         );
       }
 
-      const message = await mailClient.pollMessages(filters, timeout);
+      const message = await mailClient.pollMessages(filters, {
+        timeout,
+        autoDelete,
+      });
       const html = message.html?.[0] ?? message.html ?? "";
 
       if (html) {

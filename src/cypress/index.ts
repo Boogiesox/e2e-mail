@@ -1,4 +1,4 @@
-import type { SearchFilters } from "../core/mailtm/mailtm";
+import type { PollingOptions, SearchFilters } from "../core/mailtm/mailtm";
 import type { components } from "../core/api/mailtm-api.d";
 import { E2EMailClient } from "../core/mailtm";
 
@@ -23,10 +23,13 @@ declare global {
        */
       searchMailbox(
         filters?: SearchFilters,
-        options?: { timeout?: number },
+        options?: PollingOptions,
       ): Chainable<Message>;
 
-      renderEmail(message: Message): Chainable<void>;
+      /**
+       * Delete the account mailbox and all its emails from the server
+       */
+      removeMailbox(): Chainable<void>;
     }
   }
 }
@@ -42,8 +45,23 @@ Cypress.Commands.add("initializeMailbox", (address, password) => {
   });
 });
 
+Cypress.Commands.add("removeMailbox", () => {
+  return cy.then(async () => {
+    if (!mailClient) {
+      throw new Error(
+        "Mailbox client not initialized. Call cy.initializeMailbox() first.",
+      );
+    }
+
+    await mailClient.dispose();
+  });
+});
+
 Cypress.Commands.add("searchMailbox", (filters, options = {}) => {
-  const { timeout = Cypress.config().defaultCommandTimeout ?? 4000 } = options;
+  const {
+    timeout = Cypress.config().defaultCommandTimeout ?? 4000,
+    autoDelete,
+  } = options;
 
   return cy.then({ timeout: timeout + 1000 }, async () => {
     if (!mailClient) {
@@ -53,7 +71,10 @@ Cypress.Commands.add("searchMailbox", (filters, options = {}) => {
     }
 
     // Get most recent match
-    const message = await mailClient.pollMessages(filters, timeout);
+    const message = await mailClient.pollMessages(filters, {
+      timeout,
+      autoDelete,
+    });
     const html = Array.isArray(message.html) ? message.html[0] : message.html;
 
     // Write HTML to Cypress DOM

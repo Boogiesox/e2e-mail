@@ -7,7 +7,9 @@ const client = createClient<paths>({
   baseUrl: "https://api.mail.tm",
 });
 
-// Domain
+/**********
+ * DOMAIN *
+ *********/
 export async function getDomains() {
   const { data = [] } = await client.GET("/domains", {
     headers: {
@@ -18,7 +20,9 @@ export async function getDomains() {
   return data;
 }
 
-// Account
+/***********
+ * ACCOUNT *
+ **********/
 export async function createAccount({
   address,
   password,
@@ -36,7 +40,36 @@ export async function createAccount({
   return data;
 }
 
-// Token
+export async function getMe(token: string) {
+  const { data } = await client.GET("/me", {
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data;
+}
+
+export async function deleteAccount(token: string, id: string) {
+  const { data } = await client.DELETE("/accounts/{id}", {
+    params: {
+      path: {
+        id,
+      },
+    },
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data;
+}
+
+/*********
+ * TOKEN *
+ ********/
 export async function createToken({
   address,
   password,
@@ -54,7 +87,9 @@ export async function createToken({
   return data;
 }
 
-// Messages
+/************
+ * MESSAGES *
+ ***********/
 export async function getMessages(token: string) {
   const { data } = await client.GET("/messages", {
     headers: {
@@ -82,7 +117,25 @@ export async function getMessage(token: string, id: string) {
   return data;
 }
 
-// Source
+export async function deleteMessage(token: string, id: string) {
+  const { data } = await client.DELETE("/messages/{id}", {
+    params: {
+      path: {
+        id,
+      },
+    },
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data;
+}
+
+/**********
+ * SOURCE *
+ *********/
 export async function getSource(token: string, id: string) {
   const { data } = await client.GET("/sources/{id}", {
     params: {

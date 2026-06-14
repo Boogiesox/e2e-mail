@@ -6,18 +6,18 @@ test.describe("Mail.tm Integration", () => {
     searchMailbox,
     page,
   }) => {
-    await initializeMailbox("test-ing@web-library.net", "Pass1234");
+    await initializeMailbox("testingnewmailbox@web-library.net", "Pass1234");
 
-    const messages = await searchMailbox(
+    const message = await searchMailbox(
       {
-        subject: "Testing",
-        recipient: "test-ing+123456@web-library.net",
+        //subject: "Testing",
+        recipient: "testingnewmailbox@web-library.net",
         sender: "09egrego@gmail.com",
-        createdAfter: "2026-06-09T02:25:21+00:00",
+        createdAfter: "2026-06-08T02:15:21+00:00",
       },
       { timeout: 30000 },
     );
 
-    console.log(messages);
+    console.log(message);
   });
 });
