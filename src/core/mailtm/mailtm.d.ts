@@ -14,6 +14,8 @@ export type SearchFilters = {
 export type PollingOptions = {
   /** Timeout before exisitng polling loop */
   timeout?: number;
-  /** If true, delete the email immediately when fetched */
+  /** If true, delete the email immediately when fetched
+   * @default true
+   */
   autoDelete?: boolean;
 };

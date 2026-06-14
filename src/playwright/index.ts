@@ -26,7 +26,7 @@ export type MailFixtures = {
   /**
    * Delete the account mailbox and all its emails from the server
    */
-  removeMailbox: (address: string, password: string) => void;
+  removeMailbox: () => void;
 };
 
 let mailClient: E2EMailClient | undefined;
