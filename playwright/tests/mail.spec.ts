@@ -1,10 +1,9 @@
-import { test, expect } from "../../src/playwright";
+import { test, expect } from "e2e-mail/playwright";
 
 test.describe("Mail.tm Integration", () => {
   test("should fetch messages using getMailMessages fixture", async ({
     initializeMailbox,
     searchMailbox,
-    page,
   }) => {
     await initializeMailbox("testingnewmailbox@web-library.net", "Pass1234");
 

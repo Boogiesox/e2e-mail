@@ -1,6 +1,6 @@
 import createClient from "openapi-fetch";
-import type { paths } from "../api/mailtm-api.d";
-import type { RequestPayload } from ".";
+import type { paths } from "./types/mailtm-api";
+import type { RequestPayload } from "./types";
 
 /** OpenAPI client for MailTM */
 const client = createClient<paths>({

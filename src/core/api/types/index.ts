@@ -1,12 +1,13 @@
-import type { operations } from "./mailtm-api.d";
+import "./mailtm-api";
+import type { operations } from "./mailtm-api";
 
-type RequestPayload<T extends keyof operations> = operations[T] extends {
+export type RequestPayload<T extends keyof operations> = operations[T] extends {
   requestBody: { content: { "application/json": infer U } };
 }
   ? U
   : never;
 
-type ResponseData<
+export type ResponseData<
   T extends keyof operations,
   Status extends keyof operations[T]["responses"],
 > = operations[T]["responses"][Status] extends {

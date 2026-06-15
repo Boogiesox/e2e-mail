@@ -1,6 +1,6 @@
-import { ResponseData } from "../api";
+import type { ResponseData } from "../api/types";
 import { getDomains } from "../api/mailtm-api";
-import type { SearchFilters } from "./mailtm.d";
+import type { SearchFilters } from "./types";
 
 /** Determines if passed email domain matches any active domains from mail.tm, fail if not
  * @remarks This is intentionally bypassed if a token was successfully created for a previously established account whose domain was deactivated

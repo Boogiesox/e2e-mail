@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "target": "ES2020",
     "module": "ESNext",
     "moduleResolution": "Bundler",
@@ -11,8 +12,14 @@
     "types": ["cypress", "node"],
     "skipLibCheck": true,
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "src/*": ["src/*"],
+      "cypress/*": ["src/cypress/*"],
+      "playwright/*": ["src/playwright/*"]
+    }
   },
   "include": ["src", "cypress", "playwright"],
-  "exclude": ["node_modules", "**/*.d.ts"]
+  "exclude": ["node_modules"]
 }

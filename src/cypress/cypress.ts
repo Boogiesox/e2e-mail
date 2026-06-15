@@ -1,38 +1,5 @@
-import type { PollingOptions, SearchFilters } from "../core/mailtm/mailtm";
-import type { components } from "../core/api/mailtm-api.d";
 import { E2EMailClient } from "../core/mailtm";
-
-export type { SearchFilters } from "../core/mailtm/mailtm";
-
-type Message = components["schemas"]["Message-message.read"];
-
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      /**
-       * Initialize mailbox session
-       * @param address Email address
-       * @param password Account password
-       */
-      initializeMailbox(address: string, password: string): void;
-
-      /**
-       * Get most recent inbox match for an existing or new mail account
-       * @param filters Optional search filters
-       * @param options Configuration for message polling
-       */
-      searchMailbox(
-        filters?: SearchFilters,
-        options?: PollingOptions,
-      ): Chainable<Message>;
-
-      /**
-       * Delete the account mailbox and all its emails from the server
-       */
-      removeMailbox(): Chainable<void>;
-    }
-  }
-}
+import "./types";
 
 let mailClient: E2EMailClient | null = null;
 

@@ -7,7 +7,7 @@ import {
   getMe,
   deleteMessage,
 } from "../api/mailtm-api";
-import type { PollingOptions, SearchFilters } from "./mailtm.d";
+import type { PollingOptions, SearchFilters } from "./types";
 import { filterMessages, validateEmailDomain } from "./utils";
 
 export class E2EMailClient {

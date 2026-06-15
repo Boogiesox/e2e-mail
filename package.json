@@ -1,6 +1,6 @@
 {
   "name": "e2e-mail",
-  "version": "0.0.1",
+  "version": "0.0.7",
   "description": "A zero-config solution for testing email in major testing frameworks.",
   "main": "dist/index.js",
   "type": "module",
@@ -9,10 +9,12 @@
       "import": "./dist/index.js"
     },
     "./cypress": {
-      "import": "./dist/cypress/index.js"
+      "types": "./dist/cypress/cypress.d.ts",
+      "import": "./dist/cypress.js"
     },
     "./playwright": {
-      "import": "./dist/playwright/index.js"
+      "types": "./dist/playwright/playwright.d.ts",
+      "import": "./dist/playwright.js"
     }
   },
   "files": [
@@ -39,11 +41,15 @@
   "devDependencies": {
     "@playwright/test": "^1.49.0",
     "@types/node": "^25.9.2",
+    "cypress": "^15.17.0",
+    "e2e-mail": "^0.0.7",
     "openapi-fetch": "^0.17.0",
     "openapi-typescript": "^7.13.0",
     "tsx": "^4.22.4",
-    "typescript": "^5.9.3",
-    "vite": "^6.3.0"
+    "typescript": "^6.0.3",
+    "vite": "^6.3.0",
+    "vite-plugin-dts": "^5.0.2",
+    "vite-tsconfig-paths": "^6.1.1"
   },
   "peerDependencies": {
     "cypress": "^15",
