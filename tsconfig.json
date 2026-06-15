@@ -18,7 +18,8 @@
       "src/*": ["src/*"],
       "cypress/*": ["src/cypress/*"],
       "playwright/*": ["src/playwright/*"]
-    }
+    },
+    "outDir": "dist"
   },
   "include": ["src", "cypress", "playwright"],
   "exclude": ["node_modules"]
