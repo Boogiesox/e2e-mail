@@ -31,9 +31,9 @@ declare global {
 }
 
 Cypress.Commands.add("initializeMailbox", (address, password) => {
-  cy.then(() => {
-    cy.log(`Initializing mailbox ${address}`);
+  cy.log(`Initializing mailbox ${address}`);
 
+  cy.then(() => {
     mailClient = new E2EMailClient(address, password);
     return mailClient.initialize();
   });
