@@ -19,7 +19,7 @@ export type MailFixtures = {
   searchMailbox: (
     filters?: SearchFilters,
     options?: PollingOptions,
-  ) => Promise<Message>;
+  ) => Promise<void>;
 
   /**
    * Delete the account mailbox and all its emails from the server
@@ -64,7 +64,6 @@ export const test: TestType<MailFixtures, {}> = base.extend<MailFixtures>({
       if (html) {
         await page.setContent(String(html));
       }
-      return message;
     });
   },
 });

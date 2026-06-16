@@ -23,35 +23,31 @@ declare global {
       searchMailbox(
         filters?: SearchFilters,
         options?: PollingOptions,
-      ): Chainable<Message>;
+      ): Chainable<void>;
 
       /**
        * Delete the account mailbox and all its emails from the server
        */
-      removeMailbox(): Chainable<void>;
+      removeMailbox(): void;
     }
   }
 }
 
 Cypress.Commands.add("initializeMailbox", (address, password) => {
-  cy.log(`Creating mailbox ${address}`);
+  cy.log(`Initializing mailbox ${address}`);
 
-  return cy.then(async () => {
-    mailClient = new E2EMailClient(address, password);
-    await mailClient.initialize();
-  });
+  mailClient = new E2EMailClient(address, password);
+  mailClient.initialize();
 });
 
 Cypress.Commands.add("removeMailbox", () => {
-  return cy.then(async () => {
-    if (!mailClient) {
-      throw new Error(
-        "Mailbox client not initialized. Call cy.initializeMailbox() first.",
-      );
-    }
+  if (!mailClient) {
+    throw new Error(
+      "Mailbox client not initialized. Call cy.initializeMailbox() first.",
+    );
+  }
 
-    await mailClient.dispose();
-  });
+  mailClient.dispose();
 });
 
 Cypress.Commands.add("searchMailbox", (filters, options = {}) => {
@@ -60,7 +56,7 @@ Cypress.Commands.add("searchMailbox", (filters, options = {}) => {
     autoDelete,
   } = options;
 
-  return cy.then({ timeout: timeout + 1000 }, async () => {
+  cy.wrap(async () => {
     if (!mailClient) {
       throw new Error(
         "Mailbox client not initialized. Call cy.initializeMailbox() first.",
@@ -72,6 +68,7 @@ Cypress.Commands.add("searchMailbox", (filters, options = {}) => {
       timeout,
       autoDelete,
     });
+
     const html = Array.isArray(message.html) ? message.html[0] : message.html;
 
     // Write HTML to Cypress DOM
@@ -82,7 +79,5 @@ Cypress.Commands.add("searchMailbox", (filters, options = {}) => {
         doc.close();
       });
     }
-
-    return message;
   });
 });
