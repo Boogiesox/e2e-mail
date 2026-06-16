@@ -1,11 +1,8 @@
 import { test as base, expect, type TestType } from "@playwright/test"; // 1. Import TestType
 import { E2EMailClient } from "../core/mailtm";
 import type { PollingOptions, SearchFilters } from "../core/mailtm/types";
-import type { components } from "../core/api/types/mailtm-api";
 
 let mailClient: E2EMailClient | undefined;
-
-type Message = components["schemas"]["Message-message.read"];
 
 export type MailFixtures = {
   /**
@@ -51,16 +48,20 @@ export const test: TestType<MailFixtures, {}> = base.extend<MailFixtures>({
         timeout = test.info().project.use.actionTimeout ?? 4000,
         autoDelete,
       } = options;
+
       if (!mailClient) {
         throw new Error(
           "Mailbox client not initialized. Call initializeMailbox() first.",
         );
       }
+
       const message = await mailClient.pollMessages(filters, {
         timeout,
         autoDelete,
       });
+
       const html = message.html?.[0] ?? message.html ?? "";
+
       if (html) {
         await page.setContent(String(html));
       }
