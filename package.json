@@ -1,26 +1,40 @@
 {
   "name": "e2e-mail",
-  "version": "0.0.9",
+  "version": "0.0.12",
   "description": "A zero-config solution for testing email in major testing frameworks.",
-  "main": "dist/index.js",
   "type": "module",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "require": "./dist/index.js"
     },
     "./cypress": {
-      "types": "./dist/src/cypress/cypress.d.ts",
+      "types": "./dist/cypress/cypress.d.ts",
       "import": "./dist/cypress.js",
-      "default": "./dist/cypress.js"
+      "require": "./dist/cypress.js"
     },
     "./playwright": {
-      "types": "./dist/src/playwright/playwright.d.ts",
+      "types": "./dist/playwright/playwright.d.ts",
       "import": "./dist/playwright.js",
-      "default": "./dist/playwright.js"
+      "require": "./dist/playwright.js"
     }
+  },
+  "typesVersions": {
+    "*": {
+      "cypress": [
+        "dist/cypress/cypress.d.ts"
+      ],
+      "playwright": [
+        "dist/playwright/playwright.d.ts"
+      ],
+      "*": [
+        "dist/index.d.ts"
+      ]
+    }
+  },
+  "engines": {
+    "node": ">=18"
   },
   "files": [
     "dist",
@@ -47,7 +61,7 @@
     "@playwright/test": "^1.49.0",
     "@types/node": "^25.9.2",
     "cypress": "^15.17.0",
-    "e2e-mail": "^0.0.9",
+    "e2e-mail": "^0.0.12",
     "openapi-fetch": "^0.17.0",
     "openapi-typescript": "^7.13.0",
     "tsx": "^4.22.4",
@@ -57,8 +71,8 @@
     "vite-tsconfig-paths": "^6.1.1"
   },
   "peerDependencies": {
-    "cypress": "^15",
-    "playwright": "^1.60"
+    "@playwright/test": "^1.60.0",
+    "cypress": "^15.0.0"
   },
   "peerDependenciesMeta": {
     "cypress": {

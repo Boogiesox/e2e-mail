@@ -7,8 +7,11 @@ export default defineConfig({
   plugins: [
     tsconfigPaths(),
     dts({
-      bundleTypes: false,
+      entryRoot: "src",
+      outDirs: ["dist"],
+      include: ["src"],
       exclude: ["cypress/**", "playwright/**"],
+      tsconfigPath: "./tsconfig.json",
     }),
   ],
   build: {
@@ -20,10 +23,14 @@ export default defineConfig({
       },
       name: "e2e-mail",
       formats: ["es"],
-      fileName: (format, entryName) => `${entryName}.js`,
     },
     rollupOptions: {
       external: ["cypress", "@playwright", "@playwright/test", "openapi-fetch"],
+      output: {
+        preserveModules: true,
+        preserveModulesRoot: "src",
+        entryFileNames: "[name].js",
+      },
     },
     minify: true,
     outDir: "dist",
