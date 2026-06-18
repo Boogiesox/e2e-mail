@@ -20,6 +20,12 @@
     },
     "outDir": "dist"
   },
-  "include": ["src", "cypress", "playwright"],
+  "include": [
+    "src",
+    "cypress",
+    "playwright",
+    "playwright.config.ts",
+    "cypress.config.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

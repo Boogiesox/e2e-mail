@@ -1,10 +1,9 @@
-# e2e-mail
 <p align="center">
     <img width="256" height="256" alt="E2E Mail Logo" src="https://github.com/user-attachments/assets/7954e1d3-2be0-46f0-8c80-194b82bc0156" />
 </p>
 
 <h2 align="center">
-  Zero-config email testing for major E2E frameworks.
+  A zero-config email testing for major E2E frameworks.
 </h3>
 
 <p align="center">
@@ -23,14 +22,76 @@ By leveraging free temporary email infrastructure behind a developer-friendly AP
 
 Whether you're testing account verification flows, password resets, magic links, invitations, or transactional emails, E2E Mail helps you validate real email delivery inside your end-to-end tests with just a few lines of code.
 
-### Why E2E Mail?
+# Usage
 
-🆓 Free to use
+### Cypress
 
-🧪 Built for automated testing
+```ts
+describe("Mail.tm Integration", () => {
+  it("should fetch messages using getMailMessages command", () => {
+    cy.initializeMailbox("someusername@<valid-domain>", "Pass1234");
 
-🔄 Works with major E2E frameworks
+    /* Test script continues until app sends email */
 
-📬 Real inboxes for real email flows
+    cy.searchMailbox(
+      {
+          subject: "", // Optional - Subject Filter
+          recipient: "", // Optional - Recipient Filter
+          sender: "", // Optional - Sender Filter
+          createdAfter: "", // - Optional Min Date Filter
+      },
+      {
+          timeout: 15000 // Optional - How long to poll for a match
+          autoDelete: false // Optional - Delete after fetching (Defaults true)
+      },
+    );
 
-Email testing shouldn't require a subscription. It should just work.
+    /* Most recent matching email DOM renders and assertions can be made against it */
+  });
+});
+```
+
+### Playwright
+
+```ts
+test.describe("Mail.tm Integration", () => {
+  test("should fetch relevant message", async ({
+    initializeMailbox,
+    searchMailbox,
+  }) => {
+    await initializeMailbox("someusername@<valid-domain>", "Pass1234");
+
+    /* Test script continues until app sends email */
+
+    await searchMailbox(
+      {
+          subject: "", // Optional - Subject Filter
+          recipient: "", // Optional - Recipient Filter
+          sender: "", // Optional - Sender Filter
+          createdAfter: "", // - Optional Min Date Filter
+      },
+      {
+          timeout: 15000 // Optional - How long to poll for a match
+          autoDelete: false // Optional - Delete after fetching (Defaults true)
+      },
+    );
+
+    /* Most recent matching email DOM renders and assertions can be made against it */
+  });
+});
+```
+
+That's it... Seriously!
+
+# Tips
+
+### I have multiple tests sharing an inbox and want to uniquely identify their emails.
+
+Email subaddressing is supported here. Add your unique identifier to your email like `test+<any-string-identifier>@example.com` and then
+
+```ts
+searchMailbox({
+  recipient: "test+<any-string-identifier>@example.com",
+  // ...additional filters
+});
+```
