@@ -27,12 +27,16 @@ Whether you're testing account verification flows, password resets, magic links,
 ### Cypress
 
 ```ts
+import "e2e-mail/cypress"; // Or globally wherever you import commands
+
 describe("Mail.tm Integration", () => {
-  it("should fetch messages using getMailMessages command", () => {
+  it("fetches the most recent and relevant message", () => {
+    /* STEP 1 */
     cy.initializeMailbox("someusername@<valid-domain>", "Pass1234");
 
     /* Test script continues until app sends email */
 
+    /* STEP 2 */
     cy.searchMailbox(
       {
           subject: "", // Optional - Subject Filter
@@ -46,7 +50,7 @@ describe("Mail.tm Integration", () => {
       },
     );
 
-    /* Most recent matching email DOM renders and assertions can be made against it */
+    /* Renders email DOM accepting assertions and interactions */
   });
 });
 ```
@@ -54,15 +58,19 @@ describe("Mail.tm Integration", () => {
 ### Playwright
 
 ```ts
+import { test, expect } from "e2e-mail/playwright";
+
 test.describe("Mail.tm Integration", () => {
-  test("should fetch relevant message", async ({
+  test("fetches the most recent and relevant message", async ({
     initializeMailbox,
     searchMailbox,
   }) => {
+    /* STEP 1 */
     await initializeMailbox("someusername@<valid-domain>", "Pass1234");
 
     /* Test script continues until app sends email */
 
+    /* STEP 2 */
     await searchMailbox(
       {
           subject: "", // Optional - Subject Filter
@@ -76,7 +84,7 @@ test.describe("Mail.tm Integration", () => {
       },
     );
 
-    /* Most recent matching email DOM renders and assertions can be made against it */
+    /* Renders email DOM accepting assertions and interactions */
   });
 });
 ```
