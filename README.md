@@ -144,5 +144,5 @@ const client = new E2EMailClient('test@example.com', "Pass1234");
 
 client.initialize()
 client.pollMessages()
-client.displose()
+client.dispose()
 ```
