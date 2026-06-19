@@ -24,6 +24,10 @@ Whether you're testing account verification flows, password resets, magic links,
 
 # Usage
 
+```bash
+npm i e2e-mail
+```
+
 ### Cypress
 
 ```ts
@@ -50,6 +54,9 @@ describe("Mail.tm Integration", () => {
       },
     );
 
+    /* STEP 3 (OPTIONAL) */
+    cy.removeMailbox()
+
     /* Renders email DOM accepting assertions and interactions */
   });
 });
@@ -64,6 +71,7 @@ test.describe("Mail.tm Integration", () => {
   test("fetches the most recent and relevant message", async ({
     initializeMailbox,
     searchMailbox,
+    removeMailbox
   }) => {
     /* STEP 1 */
     await initializeMailbox("someusername@<valid-domain>", "Pass1234");
@@ -83,6 +91,9 @@ test.describe("Mail.tm Integration", () => {
           autoDelete: false // Optional - Delete after fetching (Defaults true)
       },
     );
+
+    /* STEP 3 (OPTIONAL) */
+    await removeMailbox()
 
     /* Renders email DOM accepting assertions and interactions */
   });
