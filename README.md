@@ -1,5 +1,5 @@
 <p align="center">
-    <img width="256" height="256" alt="E2E Mail Logo" src="https://github.com/user-attachments/assets/7954e1d3-2be0-46f0-8c80-194b82bc0156" />
+    <img width="256" height="256" alt="Screenshot 2026-06-19 at 1 16 02 AM" src="https://github.com/user-attachments/assets/171830fc-c2b9-4d94-ab6e-bda89c033364" />
 </p>
 
 <h2 align="center">
