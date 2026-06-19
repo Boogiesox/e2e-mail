@@ -3,7 +3,7 @@
 </p>
 
 <h2 align="center">
-  A zero-config email testing for major E2E frameworks.
+  Zero-config email testing for major E2E frameworks.
 </h3>
 
 <p align="center">
