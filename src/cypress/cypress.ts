@@ -1,7 +1,6 @@
 import { E2EMailClient } from "../core/mailtm";
 import type { PollingOptions, SearchFilters } from "../core/mailtm/types";
 
-let mailClient: E2EMailClient | null = null;
 declare global {
   namespace Cypress {
     interface Chainable {
@@ -33,21 +32,23 @@ declare global {
 Cypress.Commands.add("initializeMailbox", (address, password) => {
   cy.log(`Initializing mailbox ${address}`);
 
-  cy.then(() => {
-    mailClient = new E2EMailClient(address, password);
-    return mailClient.initialize();
+  cy.then(async () => {
+    const client = new E2EMailClient(address, password);
+    await client.initialize();
+
+    cy.wrap(client, { log: false }).as("mailClient");
   });
 });
 
 Cypress.Commands.add("removeMailbox", () => {
-  cy.then(() => {
-    if (!mailClient) {
+  cy.get<E2EMailClient>("@mailClient").then(async (client) => {
+    if (!client) {
       throw new Error(
         "Mailbox client not initialized. Call cy.initializeMailbox() first.",
       );
     }
 
-    return mailClient.dispose();
+    return client.dispose();
   });
 });
 
@@ -57,27 +58,34 @@ Cypress.Commands.add("searchMailbox", (filters, options = {}) => {
     autoDelete,
   } = options;
 
-  return cy.then({ timeout: timeout + 2000 }, async () => {
-    if (!mailClient) {
-      throw new Error(
-        "Mailbox client not initialized. Call cy.initializeMailbox() first.",
-      );
-    }
+  // Get most recent match
+  cy.get<E2EMailClient>("@mailClient", { timeout: timeout + 2000 }).then(
+    (client) => {
+      return cy.then({ timeout: timeout + 2000 }, async () => {
+        if (!client) {
+          throw new Error(
+            "Mailbox client not initialized. Call cy.initializeMailbox() first.",
+          );
+        }
 
-    // Get most recent match
-    const message = await mailClient.pollMessages(filters, {
-      timeout,
-      autoDelete,
-    });
-    const html = Array.isArray(message.html) ? message.html[0] : message.html;
+        const message = await client.pollMessages(filters, {
+          timeout,
+          autoDelete,
+        });
 
-    // Write HTML to Cypress DOM
-    if (html) {
-      cy.document().then((doc) => {
-        doc.open();
-        doc.write(String(html));
-        doc.close();
+        const html = Array.isArray(message.html)
+          ? message.html[0]
+          : message.html;
+
+        // Write HTML to Cypress DOM
+        if (html) {
+          cy.document().then((doc) => {
+            doc.open();
+            doc.write(String(html));
+            doc.close();
+          });
+        }
       });
-    }
-  });
+    },
+  );
 });
